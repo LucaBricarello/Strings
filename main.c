@@ -13,13 +13,13 @@
 
 int main() {
 
-
+	int hist[HIST_BINS];
+	//memset(hist, 0, HIST_BINS);			// inizializzo la stringa a 0
 	char str[STR_SIZE];
 	char outstr[STR_SIZE];
 	char mos;
 	int occurrences;
 	char tosearch;
-
 
 	printf("Enter text: ");
 	if (fgets(str, STR_SIZE, stdin) == NULL) {
@@ -31,19 +31,21 @@ int main() {
 
 	printf("\nstring: %s\n", str);
 
-	MOSstring(str, STR_SIZE, &mos, &occurrences);
+	Shist(str, strlen(str), hist);
+
+	MOSstring(hist, &mos, &occurrences);
 	printf("The most occurring symbol is '%c' = %d times\n", mos, occurrences);
 
-	occurrences = AOstring(str, STR_SIZE);
+	occurrences = AOstring(hist);
 	printf("The string includes %d alphabet characters\n", occurrences);
 
-	occurrences = DOstring(str, STR_SIZE);
+	occurrences = DOstring(hist);
 	printf("The string includes %d digits\n", occurrences);
 
 
 	printf("Enter a symbol: ");
 	tosearch = getchar();
-	occurrences = SOstring(str, STR_SIZE, tosearch);
+	occurrences = SOstring(hist, tosearch);
 
 	printf("Symbol -%c- appears %d times.", tosearch, occurrences);
 
