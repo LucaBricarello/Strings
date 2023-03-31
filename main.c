@@ -4,51 +4,81 @@
 	Details.
 */
 
+
 #include <stdio.h> 
 #include <stdlib.h> 
-#include <string.h>
+#include <string.h> 
 #include "stringslib.h"
+
 
 #define STR_SIZE 1000
 
+
 int main() {
 
-	int hist[HIST_BINS];
-	//memset(hist, 0, HIST_BINS);			// inizializzo la stringa a 0
+
 	char str[STR_SIZE];
-	char outstr[STR_SIZE];
+	int* hist;
 	char mos;
 	int occurrences;
 	char tosearch;
+	int rv;
+
 
 	printf("Enter text: ");
 	if (fgets(str, STR_SIZE, stdin) == NULL) {
-		printf("ERROR in Main: cannot read input tetx\n");
+		printf("ERROR in Main: cannot read input text\n");
 		return -1;
 
 	}
+
 	str[strcspn(str, "\n")] = 0; // removes EOL from the string
 
 	printf("\nstring: %s\n", str);
 
-	Shist(str, strlen(str), hist);
+	hist = Shist(str, STR_SIZE);
+	if (hist == NULL) {
+		printf("ERROR in Main: cannot compute histogram\n");
+		return -1;
 
-	MOSstring(hist, &mos, &occurrences);
+	}
+
+	rv = MOSstring(hist, &mos, &occurrences);
+	if (rv < 0) {
+		printf("ERROR in Main: cannot compute most occurring symbol\n");
+		return -1;
+	}
+
 	printf("The most occurring symbol is '%c' = %d times\n", mos, occurrences);
 
 	occurrences = AOstring(hist);
+	if (occurrences < 0) {
+		printf("ERROR in Main: cannot compute the occurrences of alphabet symbols\n");
+		return -1;
+	}
 	printf("The string includes %d alphabet characters\n", occurrences);
 
 	occurrences = DOstring(hist);
+	if (occurrences < 0) {
+		printf("ERROR in Main: cannot compute the occurrences of digits\n");
+		return -1;
+	}
 	printf("The string includes %d digits\n", occurrences);
 
 
 	printf("Enter a symbol: ");
 	tosearch = getchar();
 	occurrences = SOstring(hist, tosearch);
+	if (occurrences < 0) {
+		printf("ERROR in Main: cannot compute the occurrences of the symbol\n");
+		return -1;
+
+	}
 
 	printf("Symbol -%c- appears %d times.", tosearch, occurrences);
 
+	if (hist != NULL)
+		free(hist);
 
 	return 0;
 }
