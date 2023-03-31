@@ -9,6 +9,8 @@
 #include <stdlib.h> 
 #include <string.h> 
 #include "stringslib.h"
+#include "stringlist.h"
+#include "fileIO.h"
 
 
 #define STR_SIZE 1000
@@ -16,6 +18,11 @@
 
 int main() {
 
+	char fname[STR_SIZE];
+	strtoken* listPtr;
+	strtoken* listPtrC;
+	int j = 0;
+	int chosenLine;
 
 	char str[STR_SIZE];
 	int* hist;
@@ -25,16 +32,55 @@ int main() {
 	int rv;
 
 
-	printf("Enter text: ");
-	if (fgets(str, STR_SIZE, stdin) == NULL) {
+	printf("Enter file name: ");
+	if (fgets(fname, STR_SIZE, stdin) == NULL) {
 		printf("ERROR in Main: cannot read input text\n");
 		return -1;
 
 	}
 
-	str[strcspn(str, "\n")] = 0; // removes EOL from the string
+	fname[strcspn(fname, "\n")] = 0; // removes EOL from the string
 
-	printf("\nstring: %s\n", str);
+	printf("\nfile name: %s\n", fname);
+	
+	listPtr = ReadLinesFromFile(fname);
+	if (listPtr == NULL)
+	{
+		printf("ERROR, something went wrong while reading the lines from file and copying them in the list");
+		return 0;
+	}
+	listPtrC = listPtr;
+
+	printf("\nThe file contains the following lines:\n\n");
+	while (listPtrC != NULL)
+	{
+		printf("%d) %s\n", j, listPtrC->token);
+		listPtrC = listPtrC->next;
+		j++;
+	}
+	printf("\n");
+
+	listPtrC = listPtr;
+
+	printf("Which line of the file you want to be analized? (the first line is line 0)\nline: ");
+	scanf("%d", &chosenLine);
+	getchar();	// to ignore EOL when taking the number of the choosen line
+
+	// i make listPtr point to the line that i want to analize
+	for (int i = 0; i < chosenLine && listPtr != NULL; i++)
+	{
+		listPtr = listPtr->next;
+	}
+
+	if (listPtr == NULL)
+	{
+		printf("ERROR: the choosen line does not exist\n");
+		return 0;
+	}
+
+	strcpy(str, listPtr->token);
+
+	printf("The string is : %s\n", str);
 
 	hist = Shist(str, STR_SIZE);
 	if (hist == NULL) {
@@ -79,6 +125,8 @@ int main() {
 
 	if (hist != NULL)
 		free(hist);
+
+	ClearList(listPtrC);
 
 	return 0;
 }
