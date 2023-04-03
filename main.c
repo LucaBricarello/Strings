@@ -20,7 +20,7 @@ int main() {
 
 	char fname[STR_SIZE];
 	strtoken* listPtr;
-	strtoken* listPtrC;
+	strtoken* linePtr;
 	int j = 0;
 	int chosenLine;
 
@@ -49,36 +49,36 @@ int main() {
 		printf("ERROR, something went wrong while reading the lines from file and copying them in the list");
 		return 0;
 	}
-	listPtrC = listPtr;
+	linePtr = listPtr;
 
 	printf("\nThe file contains the following lines:\n\n");
-	while (listPtrC != NULL)
+	while (linePtr != NULL)
 	{
-		printf("%d) %s\n", j, listPtrC->token);
-		listPtrC = listPtrC->next;
+		printf("%d) %s\n", j, linePtr->token);
+		linePtr = linePtr->next;
 		j++;
 	}
 	printf("\n");
 
-	listPtrC = listPtr;
+	linePtr = listPtr;
 
-	printf("Which line of the file you want to be analized? (the first line is line 0)\nline: ");
+	printf("Which line of the file you want to be analised? (the first line is line 0)\nline: ");
 	scanf("%d", &chosenLine);
 	getchar();	// to ignore EOL when taking the number of the choosen line
 
-	// i make listPtr point to the line that i want to analize
-	for (int i = 0; i < chosenLine && listPtr != NULL; i++)
+	// i make listPtr point to the line that i want to analise
+	for (int i = 0; i < chosenLine && linePtr != NULL; i++)
 	{
-		listPtr = listPtr->next;
+		linePtr = linePtr->next;
 	}
 
-	if (listPtr == NULL)
+	if (linePtr == NULL)
 	{
 		printf("ERROR: the choosen line does not exist\n");
 		return 0;
 	}
 
-	strcpy(str, listPtr->token);
+	strcpy(str, linePtr->token);
 
 	printf("The string is : %s\n", str);
 
@@ -126,7 +126,7 @@ int main() {
 	if (hist != NULL)
 		free(hist);
 
-	ClearList(listPtrC);
+	ClearList(listPtr);
 
 	return 0;
 }
